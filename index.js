@@ -17,6 +17,7 @@ var async = require('async'),
         getFeature: ['typeName']
     },
     
+    reStatusOK = /^(2|3)/,
     loadedTemplates = {};
 
 function getTemplate(operation, opts, callback) {
@@ -104,8 +105,22 @@ operations.forEach(function(operation) {
         // get the xml for the specified request
         getXML(operation, opts, function(err, xml) {
             request.post({ url: opts.url, body: xml }, function(err, response, body) {
-                console.log(err, response, body);
-                callback(err);
+                if (response && (! reStatusOK.test(response.statusCode))) {
+                    err = new Error('Received status code "' + response.statusCode + '" for the response');
+                }
+                
+                // if we have a body, and the expected output is JSON, attempt a conversion
+                // (if it isn't an object already)
+                if (body && opts.outputFormat === 'JSON' && (typeof body == 'string' || (body instanceof String))) {
+                    try {
+                        body = JSON.parse(body);
+                    }
+                    catch (e) {
+                        err = new Error('Expected JSON, but could not JSON parse the response');
+                    }
+                }
+                
+                callback(err, body);
             });
         });
     };

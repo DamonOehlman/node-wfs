@@ -22,6 +22,13 @@ describe('getFeature tests', function() {
 
     it('should be able to make the request to a test server', function(done) {
         wfs.getFeature(baseIceCores, function(err, results) {
+            expect(results).to.be.ok();
+            expect(results.type).to.equal('FeatureCollection');
+            
+            // check that we have a features array
+            expect(Array.isArray(results.features)).to.be.ok();
+            expect(results.features.length).to.be.above(50);
+            
             done(err);
         });
     });
