@@ -29,7 +29,7 @@
     "url": "http://github.com/DamonOehlman/node-wfs/issues"
   },
   "scripts": {
-    "test": "mocha --reporter spec --timeout 10000"
+    "test": "mocha --reporter spec --timeout 20000"
   },
   "contributors": [],
   "optionalDependencies": {}
