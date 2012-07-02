@@ -93,12 +93,20 @@ exports.getXML = getXML;
 // initialise the operation handlers
 operations.forEach(function(operation) {
     exports[operation] = function(opts, callback) {
+        // ensure we have opts
+        opts = opts || {};
+        
+        // ensure that a url has been supplied
+        if (! opts.url) {
+            return callback(new Error('A url is required for a "' + operation + '" requuest'));
+        }
+        
         // get the xml for the specified request
         getXML(operation, opts, function(err, xml) {
-            
+            request.post({ url: opts.url, body: xml }, function(err, response, body) {
+                console.log(err, response, body);
+                callback(err);
+            });
         });
-        
-        
-        console.log(opts);
     };
 });
