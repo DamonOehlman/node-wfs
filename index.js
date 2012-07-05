@@ -1,4 +1,5 @@
 var async = require('async'),
+    debug = require('debug')('wfs'),
     formatter = require('formatter'),
     fs = require('fs'),
     path = require('path'),
@@ -104,6 +105,8 @@ operations.forEach(function(operation) {
         
         // get the xml for the specified request
         getXML(operation, opts, function(err, xml) {
+            debug('generated xml for operation "' + operation + '"', xml);
+            
             request.post({ url: opts.url, body: xml }, function(err, response, body) {
                 if (response && (! reStatusOK.test(response.statusCode))) {
                     err = new Error('Received status code "' + response.statusCode + '" for the response');
