@@ -1,28 +1,25 @@
 {
   "name": "wfs",
   "description": "WFS (Web Feature Service) client for node",
-  "author": "Damon Oehlman <damon.oehlman@sidelab.com>",
-  "tags": [
+  "author": "Damon Oehlman <damon.oehlman@gmail.com>",
+  "keywords": [
     "query",
     "match",
     "filter"
   ],
   "version": "0.0.1",
-  "engines": {
-    "node": ">= 0.6.x < 0.9.0"
-  },
   "dependencies": {
-    "async": "0.1.x",
+    "async": "~0.2.9",
     "debug": "*",
-    "formatter": "0.1.x",
-    "request": "2.9.x",
-    "underscore": "1.3.x"
+    "formatter": "~0.4.1",
+    "request": "~2.27.0",
+    "underscore": "~1.5.2"
   },
   "devDependencies": {
-    "geofilter": "0.0.x",
-    "geojs": "0.2.x",
-    "mocha": "1.2.x",
-    "expect.js": "0.1.x"
+    "geofilter": "~0.1.3",
+    "geojs": "~0.3.1",
+    "mocha": "~1.14.0",
+    "expect.js": "~0.2.0"
   },
   "repository": {
     "type": "git",
@@ -32,8 +29,13 @@
     "url": "http://github.com/DamonOehlman/node-wfs/issues"
   },
   "scripts": {
-    "test": "mocha --reporter spec --timeout 20000"
+    "test": "mocha --reporter spec --timeout 20000",
+    "gendocs": "gendocs > README.md"
   },
-  "contributors": [],
-  "optionalDependencies": {}
+  "homepage": "https://github.com/DamonOehlman/node-wfs",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "license": "MIT"
 }
