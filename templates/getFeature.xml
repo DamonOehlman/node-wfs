@@ -1,7 +1,9 @@
 <?xml version="1.0" ?>
-<wfs:GetFeature service="WFS" version="{{ version }}" outputFormat="{{ outputFormat }}" {{ extraAttribs }}
-    {{ namespaces }}
-    xsi:schemaLocation="http://schemas.opengis.net/filter/{{ version }}/filter.xsd">
-    
-    <wfs:Query typeName="{{ typeName }}">{{ filter }}</wfs:Query>
+<wfs:GetFeature service="WFS"
+  version="{{ version }}"
+  outputFormat="{{ outputFormat }}" {{ extraAttribs }}
+  {{ namespaces }}
+  xsi:schemaLocation="http://schemas.opengis.net/filter/{{ version }}/filter.xsd">
+
+  <wfs:Query typeName="{{ typeName }}">{{ filter }}</wfs:Query>
 </wfs:GetFeature>
