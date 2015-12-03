@@ -13,6 +13,7 @@
     "debug": "*",
     "formatter": "~0.4.1",
     "request": "~2.27.0",
+    "strip-bom": "^2.0.0",
     "underscore": "~1.5.2"
   },
   "devDependencies": {
