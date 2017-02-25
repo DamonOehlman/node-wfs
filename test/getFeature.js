@@ -5,8 +5,8 @@ var wfs = require('../'),
     comparer = require('./helpers/comparer'),
     _ = require('underscore'),
     baseRequest = {
-        url: 'http://envirohack.research.nicta.com.au/geotopo_250k/ows',
-        typeName: 'Terrain:caves'
+        url: 'http://data.gov.au/geoserver/wms',
+        typeName: 'ckan_db18d309_6584_4c51_a7a6_e76285a70eb1'
     },
     testMin = new geojs.Pos('-28.94 138.01'),
     testMax = new geojs.Pos('-9.54 154.42'),
@@ -41,7 +41,7 @@ describe('getFeature tests', function() {
 
     it('should be able to generate the xml for a non-filtered request', function(done) {
         wfs.getXML('getFeature', baseRequest, function(err, data) {
-            comparer(data, 'getFeature-caves.xml', done);
+            comparer(data, 'getFeatureRequest.xml', done);
         });
     });
 
