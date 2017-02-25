@@ -74,7 +74,7 @@ function getXML(operation, opts, callback) {
   opts.outputFormat = opts.outputFormat || 'JSON';
 
   // initialise the WFS version
-  opts.version = opts.version || '1.1.0';
+  opts.version = opts.version || '2.1.0';
 
   // check the required attributes
   for (var ii = 0, count = requiredAttributes.length; ii < count; ii++) {
@@ -89,6 +89,8 @@ function getXML(operation, opts, callback) {
   data = _.extend({}, opts, {
     namespaces: stringifyNamespaces(_.defaults(opts.namespaces || {}, baseNamespaces))
   });
+
+  console.log(data);
 
   // get the template, and
   getTemplate(operation, opts, function(err, template) {

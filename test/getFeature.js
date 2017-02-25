@@ -12,11 +12,11 @@ var wfs = require('../'),
     testMax = new geojs.Pos('-9.54 154.42'),
     testBounds = new geojs.BBox(testMin, testMax),
     rules = {
-        isSinkhole: {
+        inToowoomba: {
             type: 'like',
             args: {
-                property: 'TEXTNOTE',
-                value: 'sinkhole',
+                property: 'suburb',
+                value: 'Toowoomba',
                 matchCase: false
             }
         },
@@ -24,7 +24,7 @@ var wfs = require('../'),
         inQLD: {
             type: 'bbox',
             args: {
-                property: 'the_geom',
+                property: 'geometry',
                 min: testMin.toString(),
                 max: testMax.toString()
             }
@@ -52,14 +52,14 @@ describe('getFeature tests', function() {
 
             // check that we have a features array
             expect(Array.isArray(results.features)).to.be.ok();
-            expect(results.features.length).to.be.above(50);
+            expect(results.features.length).to.equal(40);
             // console.dir(results.features);
             done(err);
         });
     });
 
     it('should be able to make a filtered request to a test server', function(done) {
-        var ruleset = new geofilter.RuleSet([rules.isSinkhole]),
+        var ruleset = new geofilter.RuleSet([rules.inToowoomba]),
             filter = ruleset.to('ogc'),
             testRequest = _.extend({}, baseRequest, {
                 filter: filter
@@ -69,12 +69,14 @@ describe('getFeature tests', function() {
             expect(results).to.be.ok();
             expect(results.type).to.equal('FeatureCollection');
 
+            console.log(results.features[0].geometry);
+
             // check that we have a features array
             expect(Array.isArray(results.features)).to.be.ok();
             expect(results.features.length).to.be.above(0);
 
             results.features.forEach(function(feature) {
-                expect(feature.properties.TEXTNOTE.toLowerCase().indexOf('sinkhole')).to.equal(0);
+                expect(feature.properties.suburb.toLowerCase().indexOf('toowoomba')).to.equal(0);
             });
 
             done(err);
@@ -82,7 +84,7 @@ describe('getFeature tests', function() {
     });
 
     it('should be able to make a filtered (two rules) request to a test server', function(done) {
-        var ruleset = new geofilter.RuleSet([rules.isSinkhole, rules.inQLD]),
+        var ruleset = new geofilter.RuleSet([rules.inQLD]),
             filter = ruleset.to('ogc'),
             testRequest = _.extend({}, baseRequest, {
                 filter: filter
@@ -99,7 +101,7 @@ describe('getFeature tests', function() {
             results.features.forEach(function(feature) {
                 var featurePos = new geojs.Pos(feature.geometry.coordinates[0], feature.geometry.coordinates[1]);
 
-                expect(feature.properties.TEXTNOTE.toLowerCase().indexOf('sinkhole')).to.equal(0);
+                expect(feature.properties.suburb.toLowerCase().indexOf('toowoomba')).to.equal(0);
                 expect(testBounds.contains(featurePos)).to.be.ok();
             });
 
