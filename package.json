@@ -19,7 +19,8 @@
     "expect.js": "~0.2.0",
     "geofilter": "~0.1.3",
     "geojs": "github:damonoehlman/geojs#34c51f43c609a663c629466f197b56ece820c49b",
-    "mocha": "~1.14.0"
+    "mocha": "~1.14.0",
+    "nock": "^9.0.13"
   },
   "repository": {
     "type": "git",

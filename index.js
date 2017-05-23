@@ -133,6 +133,11 @@ operations.forEach(function(operation) {
       debug('making request to: ' + opts.url);
 
       request.post(requestOpts, function(err, response, body) {
+        if (err) {
+          debug('received error: ', err);
+          return callback(err);
+        }
+
         if (response && (! reStatusOK.test(response.statusCode))) {
           err = new Error('Received status code "' + response.statusCode +
             '" for the response');
