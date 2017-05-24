@@ -9,7 +9,7 @@
 
   ## Example Usage
 
-  <<< examples/sinkholes.js
+  <<< examples/parks.js
 
 **/
 
