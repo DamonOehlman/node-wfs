@@ -7,7 +7,7 @@
     "match",
     "filter"
   ],
-  "version": "1.0.0",
+  "version": "1.1.0",
   "dependencies": {
     "async": "~2.4.0",
     "debug": "~2.6.8",
