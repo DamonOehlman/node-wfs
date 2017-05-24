@@ -33,6 +33,7 @@ const rules = {
 
 describe('getFeature tests', function() {
   before(function() {
+    // NOTE: To use a real server (assuming it is still available) comment out the next line
     require('./mock-server');
   });
 
