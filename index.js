@@ -19,6 +19,7 @@ var formatter = require('formatter');
 var fs = require('fs');
 var path = require('path');
 var request = require('request');
+var stripBom = require('strip-bom');
 var _ = require('underscore');
 var operations = ['getFeature'];
 
@@ -146,6 +147,8 @@ operations.forEach(function(operation) {
         // (if it isn't an object already)
         if (body && opts.outputFormat === 'JSON' && typeof body == 'string') {
           try {
+            // Removes UTF-8 byte order mark and NULL bytes from body
+            body = stripBom(body.replace(/\0/g, ''));
             body = JSON.parse(body);
           }
           catch (e) {
