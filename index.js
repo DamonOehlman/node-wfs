@@ -35,6 +35,7 @@ var requestRequiredAttributes = {
 };
 
 var reStatusOK = /^(2|3)/;
+var reTrailingWhitespace = /\s+(\n)/gm;
 var loadedTemplates = {};
 
 function getTemplate(operation, opts, callback) {
@@ -74,7 +75,7 @@ function getXML(operation, opts, callback) {
   opts.outputFormat = opts.outputFormat || 'JSON';
 
   // initialise the WFS version
-  opts.version = opts.version || '1.1.0';
+  opts.version = opts.version || '2.1.0';
 
   // check the required attributes
   for (var ii = 0, count = requiredAttributes.length; ii < count; ii++) {
@@ -92,7 +93,7 @@ function getXML(operation, opts, callback) {
 
   // get the template, and
   getTemplate(operation, opts, function(err, template) {
-    callback(err, err ? undefined : template(data));
+    callback(err, err ? undefined : template(data).replace(reTrailingWhitespace, '$1'));
   });
 }
 
@@ -131,6 +132,11 @@ operations.forEach(function(operation) {
       debug('making request to: ' + opts.url);
 
       request.post(requestOpts, function(err, response, body) {
+        if (err) {
+          debug('received error: ', err);
+          return callback(err);
+        }
+
         if (response && (! reStatusOK.test(response.statusCode))) {
           err = new Error('Received status code "' + response.statusCode +
             '" for the response');

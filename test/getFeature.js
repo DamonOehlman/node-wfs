@@ -1,109 +1,112 @@
-var wfs = require('../'),
-    expect = require('expect.js'),
-    geofilter = require('geofilter'),
-    geojs = require('geojs'),
-    comparer = require('./helpers/comparer'),
-    _ = require('underscore'),
-    baseRequest = {
-        url: 'http://envirohack.research.nicta.com.au/geotopo_250k/ows',
-        typeName: 'Terrain:caves'
-    },
-    testMin = new geojs.Pos('-28.94 138.01'),
-    testMax = new geojs.Pos('-9.54 154.42'),
-    testBounds = new geojs.BBox(testMin, testMax),
-    rules = {
-        isSinkhole: {
-            type: 'like',
-            args: {
-                property: 'TEXTNOTE',
-                value: 'sinkhole',
-                matchCase: false
-            }
-        },
+const wfs = require('../');
+const expect = require('expect.js');
+const geofilter = require('geofilter');
+const geojs = require('geojs');
+const comparer = require('./helpers/comparer');
+const _ = require('underscore');
+const baseRequest = {
+  url: 'https://maps-public.geo.nyu.edu/geoserver/sdr/wfs',
+  typeName: 'sdr:nyu_2451_34564'
+};
+const lowerCorner = new geojs.Pos('40.60 -74.00');
+const upperCorner = new geojs.Pos('40.70 -73.90');
+const rules = {
+  inBronx: {
+    type: 'like',
+    args: {
+      property: 'borough',
+      value: 'Bronx',
+      matchCase: false
+    }
+  },
 
-        inQLD: {
-            type: 'bbox',
-            args: {
-                property: 'the_geom',
-                min: testMin.toString(),
-                max: testMax.toString()
-            }
-        }
-    };
+  // -74.00013,40.600659,-73.900909,40.700422
+  inBrooklyn: {
+    type: 'bbox',
+    args: {
+      property: 'geom',
+      min: lowerCorner.toString(),
+      max: upperCorner.toString()
+    }
+  }
+};
 
 describe('getFeature tests', function() {
-    it('should complain when "typeName" is not specified', function(done) {
-        wfs.getXML('getFeature', function(err, data) {
-            expect(err).to.be.ok();
-            done();
-        });
+  before(function() {
+    // NOTE: To use a real server (assuming it is still available) comment out the next line
+    require('./mock-server');
+  });
+
+  it('should complain when "typeName" is not specified', function(done) {
+    wfs.getXML('getFeature', function(err) {
+      expect(err).to.be.ok();
+      done();
     });
+  });
 
-    it('should be able to generate the xml for a non-filtered request', function(done) {
-        wfs.getXML('getFeature', baseRequest, function(err, data) {
-            comparer(data, 'getFeature-caves.xml', done);
-        });
+  it('should be able to generate the xml for a non-filtered request', function(done) {
+    wfs.getXML('getFeature', baseRequest, function(err, data) {
+      comparer(data, 'getFeatureRequest.xml', done);
     });
+  });
 
-    it('should be able to make the request to a test server', function(done) {
-        wfs.getFeature(baseRequest, function(err, results) {
-            expect(results).to.be.ok();
-            expect(results.type).to.equal('FeatureCollection');
+  it('should be able to make the request to a test server', function(done) {
+    wfs.getFeature(baseRequest, function(err, results) {
+      expect(err).to.not.be.ok();
+      expect(results).to.be.ok();
+      expect(results.type).to.equal('FeatureCollection');
 
-            // check that we have a features array
-            expect(Array.isArray(results.features)).to.be.ok();
-            expect(results.features.length).to.be.above(50);
-            // console.dir(results.features);
-            done(err);
-        });
+      // check that we have a features array
+      expect(Array.isArray(results.features)).to.be.ok();
+      expect(results.features.length).to.equal(96);
+      // console.dir(results.features);
+      done(err);
     });
+  });
 
-    it('should be able to make a filtered request to a test server', function(done) {
-        var ruleset = new geofilter.RuleSet([rules.isSinkhole]),
-            filter = ruleset.to('ogc'),
-            testRequest = _.extend({}, baseRequest, {
-                filter: filter
-            });
+  it('can filter results based on property name', function(done) {
+    var ruleset = new geofilter.RuleSet([rules.inBronx]),
+      filter = ruleset.to('ogc'),
+      testRequest = _.extend({}, baseRequest, {
+        filter: filter
+      });
 
-        wfs.getFeature(testRequest, function(err, results) {
-            expect(results).to.be.ok();
-            expect(results.type).to.equal('FeatureCollection');
+    wfs.getFeature(testRequest, function(err, results) {
+      expect(results).to.be.ok();
+      expect(results.type).to.equal('FeatureCollection');
 
-            // check that we have a features array
-            expect(Array.isArray(results.features)).to.be.ok();
-            expect(results.features.length).to.be.above(0);
+      // check that we have a features array
+      expect(Array.isArray(results.features)).to.be.ok();
+      expect(results.features.length).to.be.above(0);
 
-            results.features.forEach(function(feature) {
-                expect(feature.properties.TEXTNOTE.toLowerCase().indexOf('sinkhole')).to.equal(0);
-            });
+      results.features.forEach(function(feature) {
+        expect(feature.properties.borough.toLowerCase().indexOf('bronx')).to.equal(0);
+      });
 
-            done(err);
-        });
+      done(err);
     });
+  });
 
-    it('should be able to make a filtered (two rules) request to a test server', function(done) {
-        var ruleset = new geofilter.RuleSet([rules.isSinkhole, rules.inQLD]),
-            filter = ruleset.to('ogc'),
-            testRequest = _.extend({}, baseRequest, {
-                filter: filter
-            });
+  it('can filter results based on geometry', function(done) {
+    var ruleset = new geofilter.RuleSet([rules.inBrooklyn]),
+      filter = ruleset.to('ogc'),
+      testRequest = _.extend({}, baseRequest, {
+        filter: filter
+      });
 
-        wfs.getFeature(testRequest, function(err, results) {
-            expect(results).to.be.ok();
-            expect(results.type).to.equal('FeatureCollection');
+    wfs.getFeature(testRequest, function(err, results) {
+      expect(results).to.be.ok();
+      expect(results.type).to.equal('FeatureCollection');
 
-            // check that we have a features array
-            expect(Array.isArray(results.features)).to.be.ok();
-            expect(results.features.length).to.be.above(0);
+      // check that we have a features array
+      expect(Array.isArray(results.features)).to.be.ok();
+      expect(results.features.length).to.be.above(0);
 
-            results.features.forEach(function(feature) {
-                var featurePos = new geojs.Pos(feature.geometry.coordinates[0], feature.geometry.coordinates[1]);
+      results.features.forEach(function(feature) {
+        expect(feature.properties.borough.toLowerCase().indexOf('brooklyn')).to.equal(0);
+      });
 
-                expect(feature.properties.TEXTNOTE.toLowerCase().indexOf('sinkhole')).to.equal(0);
-                expect(testBounds.contains(featurePos)).to.be.ok();
-            });
-
-            done(err);
-        });
+      done(err);
     });
+  });
 });
