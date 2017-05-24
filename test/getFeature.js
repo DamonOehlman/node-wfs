@@ -32,6 +32,10 @@ const rules = {
 };
 
 describe('getFeature tests', function() {
+  before(function() {
+    require('./mock-server');
+  });
+
   it('should complain when "typeName" is not specified', function(done) {
     wfs.getXML('getFeature', function(err) {
       expect(err).to.be.ok();
@@ -59,7 +63,7 @@ describe('getFeature tests', function() {
     });
   });
 
-  it('should be able to make a filtered request to a test server', function(done) {
+  it('can filter results based on property name', function(done) {
     var ruleset = new geofilter.RuleSet([rules.inBronx]),
       filter = ruleset.to('ogc'),
       testRequest = _.extend({}, baseRequest, {
@@ -82,7 +86,7 @@ describe('getFeature tests', function() {
     });
   });
 
-  it('should be able to make a filtered (two rules) request to a test server', function(done) {
+  it('can filter results based on geometry', function(done) {
     var ruleset = new geofilter.RuleSet([rules.inBrooklyn]),
       filter = ruleset.to('ogc'),
       testRequest = _.extend({}, baseRequest, {

@@ -35,6 +35,7 @@ var requestRequiredAttributes = {
 };
 
 var reStatusOK = /^(2|3)/;
+var reTrailingWhitespace = /\s+(\n)/gm;
 var loadedTemplates = {};
 
 function getTemplate(operation, opts, callback) {
@@ -90,11 +91,9 @@ function getXML(operation, opts, callback) {
     namespaces: stringifyNamespaces(_.defaults(opts.namespaces || {}, baseNamespaces))
   });
 
-  console.log(data);
-
   // get the template, and
   getTemplate(operation, opts, function(err, template) {
-    callback(err, err ? undefined : template(data));
+    callback(err, err ? undefined : template(data).replace(reTrailingWhitespace, '$1'));
   });
 }
 
