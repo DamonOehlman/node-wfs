@@ -14,7 +14,8 @@
     "formatter": "~0.4.1",
     "request": "~2.81.0",
     "strip-bom": "~3.0.0",
-    "underscore": "~1.8.3"
+    "underscore": "~1.8.3",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "expect.js": "~0.3.1",
@@ -32,12 +33,15 @@
   },
   "scripts": {
     "test": "mocha --reporter spec --timeout 20000",
-    "gendocs": "gendocs > README.md"
+    "gendocs": "gendocs > README.md",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "homepage": "https://github.com/DamonOehlman/node-wfs",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "snyk": true
 }
