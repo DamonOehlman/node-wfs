@@ -12,7 +12,7 @@
     "async": "~2.4.0",
     "debug": "~2.6.8",
     "formatter": "~0.4.1",
-    "request": "~2.81.0",
+    "request": "~2.88.0",
     "strip-bom": "~3.0.0",
     "underscore": "~1.8.3"
   },
