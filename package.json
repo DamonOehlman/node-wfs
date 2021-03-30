@@ -14,7 +14,7 @@
     "formatter": "~0.4.1",
     "request": "~2.81.0",
     "strip-bom": "~3.0.0",
-    "underscore": "~1.8.3"
+    "underscore": "~1.12.1"
   },
   "devDependencies": {
     "expect.js": "~0.3.1",
