@@ -10,7 +10,7 @@
   "version": "1.1.0",
   "dependencies": {
     "async": "~2.4.0",
-    "debug": "~2.6.8",
+    "debug": "~3.1.0",
     "formatter": "~0.4.1",
     "request": "~2.81.0",
     "strip-bom": "~3.0.0",
